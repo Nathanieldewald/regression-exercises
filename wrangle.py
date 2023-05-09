@@ -39,7 +39,9 @@ from properties_2017
 where propertylandusetypeid = 261'''
     filename = 'zillow.csv'
     df = check_file_exists(filename, query, url)
-
+    df['tax_rate'] = df.taxamount / df.taxvaluedollarcnt
+    df['price_per_sqft'] = df.taxvaluedollarcnt / df.calculatedfinishedsquarefeet
+    df['age'] = 2017 - df.yearbuilt
     return df
 
 def remove_outliers(df, k, col_list):
@@ -53,15 +55,15 @@ def remove_outliers(df, k, col_list):
         df = df[(df[col] > lower_bound) & (df[col] < upper_bound)]  # filter dataframe
     return df
 
-def train_validate_test(df, strat):
+def train_validate_test(df):
     '''
     This function will take in a dataframe and return train, validate, and test dataframes split
     where 55% is in train, 25% is in validate, and 20% is in test.
     '''
     train_validate, test = train_test_split(df, test_size=0.2,
                                             random_state=123,
-                                            stratify=df[strat])
+                                            )
     train, validate = train_test_split(train_validate, test_size=0.25,
                                        random_state=123,
-                                       stratify=train_validate[strat])
+                                       )
     return train, validate, test
