@@ -42,6 +42,14 @@ where propertylandusetypeid = 261'''
     df['tax_rate'] = df.taxamount / df.taxvaluedollarcnt
     df['price_per_sqft'] = df.taxvaluedollarcnt / df.calculatedfinishedsquarefeet
     df['age'] = 2017 - df.yearbuilt
+    df = df.dropna()
+    df = df.rename(columns={'bedroomcnt': 'bedrooms',
+                            'bathroomcnt': 'bathrooms',
+                            'calculatedfinishedsquarefeet': 'area',
+                            'taxvaluedollarcnt': 'taxvalue',
+                            'fips': 'county'})
+    df.county = df.county.map({6037: 'LA', 6059: 'Orange', 6111: 'Ventura'})
+
     return df
 
 def remove_outliers(df, k, col_list):

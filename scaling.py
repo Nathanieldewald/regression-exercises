@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-
+import wrangle as w
 # min max scaling
 def min_max_scaling(train, validate, test, columns):
     """
@@ -148,3 +148,17 @@ def quantile_transformer(train, validate, test, columns):
     validate_scaled[columns] = scaler.transform(validate_scaled[columns])
     test_scaled[columns] = scaler.transform(test_scaled[columns])
     return train_scaled, validate_scaled, test_scaled
+
+# Function to split and scale data
+def split_scale(df, col, col_scaled):
+    '''
+    This function takes in a dataframe
+    splits into train, validate, and test
+    then applies min max scaler to the data
+    returns train, validate, test
+    '''
+    # split data
+    train, validate, test = w.train_validate_test(df)
+    # create scaler
+    train_scaled, validate_scaled, test_scaled = min_max_scaling(train, validate, test, col_scaled)
+    return train, validate, test, train_scaled, validate_scaled, test_scaled
